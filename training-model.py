@@ -1,6 +1,8 @@
 import json
 import csv
 import pickle
+
+from keras.src.applications.efficientnet_v2 import EfficientNetV2B3, EfficientNetV2B1
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications import EfficientNetB0  # Modelo pré-treinado
 from tensorflow.keras.applications.efficientnet import preprocess_input
@@ -19,7 +21,7 @@ HISTORY_PATH_JSON = 'historico_treinamento.json'  # Caminho para salvar o histó
 # Hiperparâmetros
 IMG_SIZE = 224          # Tamanho da imagem (224x224 é o padrão para EfficientNetB0)
 BATCH_SIZE = 32         # Número de imagens por lote durante o treinamento
-EPOCHS = 20             # Quantidade de épocas para treinar
+EPOCHS = 30             # Quantidade de épocas para treinar
 LEARNING_RATE = 0.0001  # Taxa de aprendizado
 
 # Gerador de dados com aumentação de imagens para o treino e pré-processamento
@@ -53,7 +55,7 @@ val_generator = train_datagen.flow_from_directory(
 num_classes = train_generator.num_classes
 
 # Carrega a EfficientNetB0 pré-treinada (sem o topo/classificador final)
-base_model = EfficientNetB0(weights='imagenet', include_top=False, input_shape=(IMG_SIZE, IMG_SIZE, 3))
+base_model = EfficientNetV2B1(weights='imagenet', include_top=False, input_shape=(IMG_SIZE, IMG_SIZE, 3))
 
 # Congela os pesos da base (não serão atualizados durante o treinamento)
 base_model.trainable = False
@@ -109,6 +111,3 @@ with open(HISTORY_PATH_CSV, 'w', newline='') as f_csv:
     for i in range(EPOCHS):
         row = [i + 1] + [history.history[k][i] for k in history.history.keys()]
         writer.writerow(row)
-
-# Mostra o resumo do modelo no terminal
-model.summary()

@@ -79,10 +79,10 @@ y_pred = np.argmax(predictions, axis=1)
 y_true = val_gen.classes
 
 # Obtém os nomes das classes (ex: ['margarida', 'rosa', 'tulipa', ...])
-# class_labels = list(val_gen.class_indices.keys())
-# print(class_labels)
+class_labels = list(val_gen.class_indices.keys())
+print(class_labels)
 
-class_labels = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips', 'classe_desconhecida']
+# class_labels = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips', 'classe_desconhecida']
 
 
 # ========================

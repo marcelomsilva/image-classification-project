@@ -23,7 +23,8 @@ class_names = ["daisy", "dandelion", "roses", "sunflowers", "tulips"]
 # ETAPA 3 – PREPARAR IMAGEM
 # ============================
 # Caminho da imagem a ser testada
-image_path = "/home/marcelo/Documents/estudos/projetos/flower_photos/rosa.jpg"
+# image_path = "/home/marcelo/Documents/estudos/projetos/flower_photos/rosa.jpg"
+image_path = "/home/marcelo/Documents/estudos/projetos/flower_photos/sunflower-1.jpg"
 
 # Carrega e redimensiona a imagem
 img = image.load_img(image_path, target_size=img_size)

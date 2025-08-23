@@ -2,7 +2,7 @@ import json
 import csv
 import pickle
 
-from keras.src.applications.efficientnet_v2 import EfficientNetV2B3, EfficientNetV2B1
+from keras.src.applications.efficientnet_v2 import EfficientNetV2B3, EfficientNetV2B1, EfficientNetV2B2
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications import EfficientNetB0  # Modelo pré-treinado
 from tensorflow.keras.applications.efficientnet import preprocess_input
@@ -21,7 +21,7 @@ HISTORY_PATH_JSON = 'historico_treinamento.json'  # Caminho para salvar o histó
 # Hiperparâmetros
 IMG_SIZE = 224          # Tamanho da imagem (224x224 é o padrão para EfficientNetB0)
 BATCH_SIZE = 32         # Número de imagens por lote durante o treinamento
-EPOCHS = 30             # Quantidade de épocas para treinar
+EPOCHS = 40             # Quantidade de épocas para treinar
 LEARNING_RATE = 0.0001  # Taxa de aprendizado
 
 # Gerador de dados com aumentação de imagens para o treino e pré-processamento
@@ -55,7 +55,7 @@ val_generator = train_datagen.flow_from_directory(
 num_classes = train_generator.num_classes
 
 # Carrega a EfficientNetB0 pré-treinada (sem o topo/classificador final)
-base_model = EfficientNetV2B1(weights='imagenet', include_top=False, input_shape=(IMG_SIZE, IMG_SIZE, 3))
+base_model = EfficientNetV2B3(weights='imagenet', include_top=False, input_shape=(IMG_SIZE, IMG_SIZE, 3))
 
 # Congela os pesos da base (não serão atualizados durante o treinamento)
 base_model.trainable = False
@@ -93,7 +93,7 @@ history = model.fit(
 )
 
 # Salva no novo formato .keras (SavedModel)
-model.save("modelo_flores.keras", save_format='keras')  # ou apenas model.save("modelo_flores.keras")
+model.save("modelo_flores.keras")
 
 # Salva o histórico de treinamento em um arquivo .pkl (pickle)
 with open(HISTORY_PATH_PKL, 'wb') as f:

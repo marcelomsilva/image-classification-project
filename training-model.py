@@ -2,10 +2,9 @@ import json
 import csv
 import pickle
 
-from keras.src.applications.efficientnet_v2 import EfficientNetV2B3, EfficientNetV2B1, EfficientNetV2B2
+from keras.src.applications.efficientnet_v2 import EfficientNetV2B1
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.applications import EfficientNetB0  # Modelo pré-treinado
-from tensorflow.keras.applications.efficientnet import preprocess_input
+from keras.src.applications.efficientnet_v2 import preprocess_input
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 from tensorflow.keras.optimizers import Adam
@@ -13,7 +12,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 # Caminhos dos diretórios
 DATASET_DIR = '/home/marcelo/Documents/estudos/projetos/flower_photos'        # Pasta onde estão as imagens separadas por classe
-MODEL_PATH = 'modelo_flores.h5'  # Caminho onde o modelo treinado será salvo
+MODEL_PATH = 'modelo_flores.keras'  # Caminho onde o modelo treinado será salvo
 HISTORY_PATH_PKL = 'historico_treinamento.pkl'  # Caminho para salvar o histórico de treinamento
 HISTORY_PATH_CSV = 'historico_treinamento.csv'  # Caminho para salvar o histórico de treinamento
 HISTORY_PATH_JSON = 'historico_treinamento.json'  # Caminho para salvar o histórico de treinamento
@@ -55,7 +54,7 @@ val_generator = train_datagen.flow_from_directory(
 num_classes = train_generator.num_classes
 
 # Carrega a EfficientNetB0 pré-treinada (sem o topo/classificador final)
-base_model = EfficientNetV2B3(weights='imagenet', include_top=False, input_shape=(IMG_SIZE, IMG_SIZE, 3))
+base_model = EfficientNetV2B1(weights='imagenet', include_top=False, input_shape=(IMG_SIZE, IMG_SIZE, 3))
 
 # Congela os pesos da base (não serão atualizados durante o treinamento)
 base_model.trainable = False
@@ -92,9 +91,6 @@ history = model.fit(
     callbacks=callbacks
 )
 
-# Salva no novo formato .keras (SavedModel)
-model.save("modelo_flores.keras")
-
 # Salva o histórico de treinamento em um arquivo .pkl (pickle)
 with open(HISTORY_PATH_PKL, 'wb') as f:
     pickle.dump(history.history, f)
@@ -108,6 +104,7 @@ with open(HISTORY_PATH_CSV, 'w', newline='') as f_csv:
     writer = csv.writer(f_csv)
     header = ['epoch'] + list(history.history.keys())
     writer.writerow(header)
-    for i in range(EPOCHS):
+    for i in range(len(history.history['loss'])):
         row = [i + 1] + [history.history[k][i] for k in history.history.keys()]
         writer.writerow(row)
+
